@@ -1,5 +1,9 @@
 import requests
 import random
+import tkinter as tk
+from tkinter import ttk
+from ctypes import windll
+windll.shcore.SetProcessDpiAwareness(1)
 
 WORDS = []
 NOUNS = []
@@ -11,7 +15,7 @@ def get_random_verb():
     no_s = False
     if ran == 0:
         no_s = True
-    with open("verbs.txt" , "r") as file:
+    with open("Projects/Sentence Generator/verbs.txt" , "r") as file:
         WORDS = file.readlines()
     for i in range(len(WORDS)):
         WORDS[i] = WORDS[i].replace("\t", "").replace("\n", "")
@@ -20,7 +24,7 @@ def get_random_verb():
     return WORDS[random.randrange(0, len(WORDS))]
 
 def get_random_noun():
-    with open("nouns.txt" , "r") as file:
+    with open("Projects/Sentence Generator/nouns.txt" , "r") as file:
         NOUNS = file.readlines()
     for i in range(len(NOUNS)):
         NOUNS[i] = NOUNS[i].replace("\n", "").capitalize()
@@ -37,9 +41,34 @@ def sentence(u_input):
                 f"{per} {verb} {con} {u_input}",
                 f"{per} {verb} {u_input} {noun}",
                 f"{per} {verb} {u_input} {noun}",]
-    return sentence[random.randrange(0, len(sentence))]
+    return tk.Label(root, text=sentence[random.randrange(0, len(sentence))]).pack()
 
-if __name__ == "__main__":
-    u_input = input("Enter word: ").lower().capitalize()
-    for i in range(10):
-        print(sentence(u_input))
+root = tk.Tk()
+root.title("Cum")
+
+window_width = 600
+window_height = 400
+
+# get the screen dimension
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+# find the center point
+center_x = int(screen_width/2 - window_width / 2)
+center_y = int(screen_height/2 - window_height / 2)
+
+# set the position of the window to the center of the screen
+root.geometry(f'{window_width}x{window_height}+{center_x}+{center_y}')
+root.minsize(window_width, window_height)
+
+message = tk.Label(root, text="Enter Word:").pack()
+
+entry = ttk.Entry(root)
+entry.pack()
+
+def call():
+    u_input = entry.get()
+    sentence(u_input)
+
+btn = tk.Button(root, text="Generate", command=call).pack()
+
+root.mainloop()
